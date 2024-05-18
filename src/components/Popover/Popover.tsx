@@ -74,6 +74,21 @@ export const directions = [...directionsStartCenter, ...directionsStartEdge];
 
 export type Direction = typeof directions[number];
 
+export const positionOnXProp = ['left', 'right'] as const;
+
+export type PositionOnX = typeof positionOnXProp[number];
+
+export const positionOnYProp = ['top', 'bottom'] as const;
+
+export type PositionOnY = typeof positionOnYProp[number];
+
+export type RawPosition = {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+};
+
 export type Position = { x: number; y: number } | undefined;
 
 export type PositioningProps =
@@ -92,6 +107,8 @@ type ChildrenRenderProp = (direction: Direction) => React.ReactNode;
 
 export type Props = PropsWithJsxAttributes<
   {
+    positionOnX?: PositionOnX;
+    positionOnY?: PositionOnY;
     direction?: Direction;
     spareDirection?: Direction;
     offset?: PopoverPropOffset;
@@ -172,6 +189,8 @@ const cnPopover = cn('Popover');
 export const Popover = forwardRef<HTMLDivElement, Props>(
   (props, componentRef) => {
     const {
+      positionOnX = 'left',
+      positionOnY = 'top',
       children,
       direction: passedDirection = 'upCenter',
       offset: propOffset = 0,
@@ -291,12 +310,22 @@ export const Popover = forwardRef<HTMLDivElement, Props>(
           ...(notVisible
             ? {}
             : {
-                ['--popover-top' as string]: `${
-                  (position?.y || 0) + window.scrollY
-                }px`,
-                ['--popover-left' as string]: `${
-                  (position?.x || 0) + window.scrollX
-                }px`,
+                ['--popover-top' as string]:
+                  positionOnY === 'top' && position.top
+                    ? `${position.top + window.scrollY}px`
+                    : undefined,
+                ['--popover-left' as string]:
+                  positionOnX == 'left' && position.left
+                    ? `${position.left + window.scrollX}px`
+                    : undefined,
+                ['--popover-bottom' as string]:
+                  positionOnY === 'bottom' && position.bottom
+                    ? `${position.bottom - window.scrollY}px`
+                    : undefined,
+                ['--popover-right' as string]:
+                  positionOnX === 'right' && position.right
+                    ? `${position.right + window.scrollX}px`
+                    : undefined,
                 [`--popover-width` as string]: equalAnchorWidth
                   ? `${anchorSize.width}px`
                   : undefined,

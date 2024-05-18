@@ -8,7 +8,13 @@ import { useFlag } from '##/hooks/useFlag';
 import { cn } from '../../../utils/bem';
 import { Button } from '../../Button/Button';
 import { Text } from '../../Text/Text';
-import { directions, Popover, popoverPropOffset } from '../Popover';
+import {
+  directions,
+  Popover,
+  popoverPropOffset,
+  positionOnXProp,
+  positionOnYProp,
+} from '../Popover';
 
 const cnPopoverVariants = cn('PopoverVariants');
 
@@ -19,6 +25,8 @@ const Variants = () => {
   );
   const direction = useSelect('direction', directions, 'upCenter');
   const offset = useSelect('offset', popoverPropOffset, '2xs');
+  const positionOnX = useSelect('positionOnX', positionOnXProp, 'left');
+  const positionOnY = useSelect('positionOnY', positionOnYProp, 'top');
   const arrowOffset = useNumber('arrowOffset', 0);
   const isInteractive = useBoolean('isInteractive', false);
 
@@ -43,6 +51,8 @@ const Variants = () => {
           direction={direction}
           onClickOutside={setOpen.off}
           isInteractive={isInteractive}
+          positionOnX={positionOnX}
+          positionOnY={positionOnY}
         >
           <Text
             view="primary"

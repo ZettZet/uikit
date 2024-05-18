@@ -1,4 +1,4 @@
-import { Direction, Position } from './Popover';
+import { Direction, Position, RawPosition } from './Popover';
 
 type Size = Pick<DOMRect, 'width' | 'height'>;
 
@@ -115,10 +115,17 @@ export const getComputedPositionAndDirection = ({
   offset = 0,
 }: ComputedPositionAndDirectionParams): {
   direction: Direction;
-  position: Position;
+  position: RawPosition | undefined;
 } => {
   if (!initialPosition) {
-    return { position: initialPosition, direction: initialDirection };
+    return {
+      position: convertToRawPosition(
+        initialPosition,
+        contentSize,
+        viewportSize,
+      ),
+      direction: initialDirection,
+    };
   }
 
   const positionsByDirection = getPositionsByDirection({
@@ -147,6 +154,27 @@ export const getComputedPositionAndDirection = ({
 
   return {
     direction,
-    position: positionsByDirection[direction],
+    position: convertToRawPosition(
+      positionsByDirection[direction],
+      contentSize,
+      viewportSize,
+    ),
+  };
+};
+
+const convertToRawPosition = (
+  position: Position,
+  { height: contentHeight, width: contentWidth }: Size,
+  { width, height }: Size,
+): RawPosition | undefined => {
+  if (!position) return;
+
+  const { x: left, y: top } = position;
+
+  return {
+    top,
+    left,
+    right: width - (left + contentWidth),
+    bottom: height - (top + contentHeight),
   };
 };
