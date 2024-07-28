@@ -115,6 +115,16 @@ export const DatePickerTypeDateRange: DatePickerTypeComponent<'date-range'> =
       Array.isArray(onFocus) ? onFocus[1]?.(e) : onFocus?.(e);
     };
 
+    const startFieldOnClickHandler = () => {
+      setCalendarVisible.on();
+      setFieldFocused('start');
+    };
+
+    const endFieldOnClickHandler = () => {
+      setCalendarVisible.on();
+      setFieldFocused('end');
+    };
+
     // эффект для того чтобы календарь переключался при вводе с клавиатуры
     useEffect(() => {
       if (props.value?.[0] && dateTimeView === 'classic' && startFocused) {
@@ -192,8 +202,8 @@ export const DatePickerTypeDateRange: DatePickerTypeComponent<'date-range'> =
             Array.isArray(rightSide) ? rightSide?.[1] : rightSide
           }
           startFieldOnBlur={startFieldOnBlurHandler}
-          startFieldOnClick={setCalendarVisible.on}
-          endFieldOnClick={setCalendarVisible.on}
+          startFieldOnClick={startFieldOnClickHandler}
+          endFieldOnClick={endFieldOnClickHandler}
           endFieldOnBlur={endFieldOnBlurHandler}
           startFocused={startFocused}
           endFocused={endFocused}
